@@ -12,7 +12,7 @@ COPY package*.json ./
 
 # Instalar las dependencias
 RUN npm install
-# Instala las dependencias listadas en `package.json`.
+
 
 # Copiar el resto del código de la aplicación
 COPY . .

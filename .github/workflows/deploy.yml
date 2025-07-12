@@ -47,5 +47,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no laura@$HOST << 'EOF'
             cd /home/laura/front-productos-docker
             docker-compose down
-            docker-compose up --build -d
+            docker-compose build --no-cache
+            docker-compose up -d
           EOF

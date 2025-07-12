@@ -1,0 +1,44 @@
+name: Deploy Front Productos
+on:
+  push:
+    branches:
+      - main
+env:
+  HOST: ${{ secrets.HOST_NAME }}
+  ENV:  ${{ secrets.ENV }}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v3
+  
+  - name: Set up SSH key
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_KEY }}
+  
+  - name: Create .env locally
+    run: |
+        echo "$ENV" > .env
+        # Debug: muestro las primeras líneas para verificar que no está vacío
+        head -n 2 .env
+
+  - name: Copy .env to server
+    run: |
+        scp -o StrictHostKeyChecking=no .env laura@$HOST:/home/laura/front-productos-docker/.env
+  - name: Deploy frontend
+    run: |
+        ssh -o StrictHostKeyChecking=no laura@$HOST bash << 'EOF'
+          cd /home/laura/front-productos-docker
+          # Si ya existe repo, actualiza; si no, clona
+          if [ -d .git ]; then
+            git pull
+          else
+            git clone https://github.com/LauraGabrielSantes/front-productos-docker .
+          fi
+          
+          # Ahora levanta los contenedores
+          docker-compose down
+          docker-compose up --build -d
+        EOF

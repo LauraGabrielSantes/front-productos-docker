@@ -2,10 +2,6 @@ services:
   frontend:
     build: .
     ports:
-      - "3000:3000"
-    environment:
-      - API=http://localhost
-      - NODE_ENV=production
-      - PUERTO_BACK=8000
-      - PUERTO_FRONT=3000
-
+      - "3011:3000"
+    env_file: .env
+      

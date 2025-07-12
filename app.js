@@ -1,22 +1,27 @@
 const express = require('express');
 const path = require('path');
-const cors = require('cors');  // Para permitir peticiones desde cualquier origen
+const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PUERTO_FRONT || 3000;
 
-// Habilitar CORS desde cualquier origen
+// Habilitar CORS
 app.use(cors());
 
-// Servir archivos estáticos desde la carpeta "public"
+// Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Redirigir cualquier ruta desconocida al index.html (opcional, útil para SPA)
+// ✅ Ruta para inyectar variables al frontend
+app.get('/env.js', (req, res) => {
+  res.set('Content-Type', 'application/javascript');
+  res.send(`window.ENV = { PUERTO_BACK: "${process.env.PUERTO_BACK || 8000}" };`);
+});
+
+// SPA fallback
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, () => {
-    console.log(`Frontend disponible en http://localhost:${port}`);
+  console.log(`Frontend disponible en http://localhost:${port}`);
 });
-

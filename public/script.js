@@ -1,5 +1,8 @@
+
 // script.js
-const API_BASE = 'http://api.jquiroz.net:8000';
+const port = window.ENV?.PUERTO_BACK || 8000;
+const api=window.ENV?.API || 'http://localhost'
+const API_BASE = `${api}:${port}/api`;
 // Función para agregar un producto
 function agregarProducto() {
     const nombre = document.getElementById('nombre').value;
@@ -10,7 +13,7 @@ function agregarProducto() {
         alert('Por favor, completa todos los campos.');
         return;
     }
-    console.log("Agregar el producto");
+    console.log("Agregar el producto:"+API_BASE);
     fetch(`${API_BASE}/productos`, {
         method: 'POST',
         headers: {

@@ -21,26 +21,31 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Create .env locally
-        run: |
-          echo "$ENV" > .env
-          head -n 2 .env  # Para verificar que no esté vacío
-
-      - name: Copy .env to server
-        run: |
-          scp -o StrictHostKeyChecking=no .env laura@$HOST:/home/laura/front-productos-docker/.env
-
-      - name: Deploy frontend
+      - name: Clonar o actualizar repositorio en servidor
         run: |
           ssh -o StrictHostKeyChecking=no laura@$HOST << 'EOF'
-            cd /home/laura/front-productos-docker
+            cd /home/laura/front-productos-docker || mkdir -p /home/laura/front-productos-docker && cd /home/laura/front-productos-docker
 
             if [ -d .git ]; then
               git pull
             else
               git clone https://github.com/LauraGabrielSantes/front-productos-docker .
             fi
+          EOF
 
+      - name: Crear .env localmente
+        run: |
+          echo "$ENV" > .env
+          head -n 2 .env  # Para verificar que no esté vacío
+
+      - name: Copiar .env al servidor
+        run: |
+          scp -o StrictHostKeyChecking=no .env laura@$HOST:/home/laura/front-productos-docker/.env
+
+      - name: Levantar contenedores en el servidor
+        run: |
+          ssh -o StrictHostKeyChecking=no laura@$HOST << 'EOF'
+            cd /home/laura/front-productos-docker
             docker-compose down
             docker-compose up --build -d
           EOF

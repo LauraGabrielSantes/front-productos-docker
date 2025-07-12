@@ -14,7 +14,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ✅ Ruta para inyectar variables al frontend
 app.get('/env.js', (req, res) => {
   res.set('Content-Type', 'application/javascript');
-  res.send(`window.ENV = { PUERTO_BACK: "${process.env.PUERTO_BACK || 8000}" };`);
+  res.send(`window.ENV = { PUERTO_BACK: "${process.env.PUERTO_BACK || 8000}", API: "${process.env.API || 'http://localhost'}" };`);
+
 });
 
 // SPA fallback

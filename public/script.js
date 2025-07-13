@@ -56,7 +56,7 @@ function cargarProductos() {
 
 // Función para eliminar un producto
 function eliminarProducto(id) {
-    fetch(`${API_BASE}/productos`, {
+    fetch(`${API_BASE}/productos/${id}`, {
         method: 'DELETE',
     })
     .then(response => response.json())

@@ -4,4 +4,6 @@ services:
     ports:
       - "3011:3000"
     env_file: .env
+    cpus: 0.1
+    mem_limit: 100m
       
